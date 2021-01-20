@@ -1235,8 +1235,8 @@ install_base_packages()
   warn 'This can take a while, please wait...'
   printf "\n"
 
-  pacstrap $CHROOT intel-ucode linux-firmware base base-devel linux-hardened linux-hardened-headers terminus-font btrfs-progs> $VERBOSE 2>&1
-  chroot $CHROOT pacman -Syy --noconfirm --overwrite='*' > $VERBOSE 2>&1
+  pacstrap $CHROOT base base-devel> $VERBOSE 2>&1
+  chroot $CHROOT pacman -S linux-firmware linux linux-headers terminus-font btrfs-progs --noconfirm --overwrite='*' > $VERBOSE 2>&1
   
   sleep "$DELAY_10"
 
@@ -1512,8 +1512,10 @@ setup_user()
     if [ "$INSTALL_MODE" != 'net' ]
     then
       cp -r "$BI_PATH/data/user/." "$CHROOT/home/$user/." > $VERBOSE 2>&1
+      chroot $CHROOT chown -R "$user":"$user" "/home/$user" > $VERBOSE 2>&1
     else
       cp -r "$BI_PATH/data/root/." "$CHROOT/home/$user/." > $VERBOSE 2>&1
+      chroot $CHROOT chown -R "$user":"$user" "/home/$user" > $VERBOSE 2>&1
     fi
   fi
 
@@ -1598,9 +1600,11 @@ setup_extra_packages()
   xorg-fonts-misc'
   
   hardware='
-  rfkill'
+  rfkill
+  intel-ucode'
 
-  kernel=''
+  kernel='
+  linux-docs'
 
   misc='
   mupdf
@@ -1904,22 +1908,27 @@ setup_display_manager(){
   printf "\n\n"
   
   printf ">>> Config Files ...\n"
-  cp -rvf "$BI_PATH/data/etc/X11" "$CHROOT/etc/" > $VERBOSE 2>&1
+  cp -rvf "$BI_PATH/data/etc/X11/" "$CHROOT/etc/X11/" > $VERBOSE 2>&1
  
   sleep 30
   
   printf ">>> Delete Old Theme ...\n"
-  chroot $CHROOT rm -rf /usr/share/slim/themes/default/* > $VERBOSE 2>&1
+  chroot $CHROOT rm -rf /usr/share/slim/themes/default > $VERBOSE 2>&1
   
-  sleep 10
+  sleep 30
+ 
+  printf ">>> Check Content ...\n"
+  chroot $CHROOT ls -la /usr/share/slim/themes/ > $VERBOSE 2>&1
+  
+  sleep 30
+  
+  printf ">>> Config New Theme ...\n"
+  cp -rvf "$BI_PATH/data/usr/share/slim/themes/default/" "$CHROOT/usr/share/slim/themes/default/" > $VERBOSE 2>&1
+  
+  sleep 30
   
   printf ">>> Check Content ...\n"
   chroot $CHROOT ls -la /usr/share/slim/themes/default/ > $VERBOSE 2>&1
-  
-  sleep 10
-  
-  printf ">>> Config New Theme ...\n"
-  cp -rvf "$BI_PATH/data/usr/share/slim/themes" "$CHROOT/usr/" > $VERBOSE 2>&1
   
   sleep 30
  
@@ -1928,7 +1937,7 @@ setup_display_manager(){
   
   printf "> DONE!\n"
   
-  sleep 10
+  sleep 30
 
   return $SUCCESS
 }
@@ -1951,13 +1960,13 @@ setup_window_managers()
 
   printf ">>> Copy Wallpaper ...\n"
   cp -vrf "$BI_PATH/data/usr/share/wallpaper/wall.jpg" "$CHROOT/usr/share/wallpaper/" > $VERBOSE 2>&1
-
+  chroot $CHROOT ls -la /usr/share/wallpaper/ > $VERBOSE 2>&1
+  
   sleep 30
 
   printf ">>> Delete Unused Files ...\n"
-  chroot $CHROOT ls -la /usr/share/xsessions/ > $VERBOSE 2>&1
   chroot $CHROOT rm /usr/share/xsessions/i3-with-shmlog.desktop > $VERBOSE 2>&1
-  
+  chroot $CHROOT ls -la /usr/share/xsessions/ > $VERBOSE 2>&1
   sleep 30
   
   printf ">>> DONE!\n"
