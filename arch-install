@@ -1235,7 +1235,7 @@ install_base_packages()
   warn 'This can take a while, please wait...'
   printf "\n"
 
-  pacstrap $CHROOT base base-devel btrfs-progs linux linux-headers linux-firmware terminus-font > $VERBOSE 2>&1
+  pacstrap $CHROOT base base-devel btrfs-progs linux-hardened linux-hardened-headers terminus-font > $VERBOSE 2>&1
   chroot $CHROOT pacman -Syy --noconfirm --overwrite='*' > $VERBOSE 2>&1
 
   return $SUCCESS
@@ -1595,9 +1595,12 @@ setup_extra_packages()
   xorg-fonts-misc'
   
   hardware='
-  intel-ucode'
+  intel-ucode
+  rfkill'
 
-  kernel='rfkill'
+  kernel='
+  linux-firmware
+  '
 
   misc='
   mupdf
