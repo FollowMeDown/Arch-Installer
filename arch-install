@@ -1565,7 +1565,11 @@ install_yay()
 # install extra (missing) packages
 setup_extra_packages()
 {
-
+ 
+  dev='
+  go
+  '
+  
   arch='
   aurpublish'
 
@@ -1601,7 +1605,6 @@ setup_extra_packages()
   mupdf
   tig
   mc
-  go
   acpi 
   alsa-utils
   bash-completion 
@@ -1680,6 +1683,7 @@ setup_extra_packages()
   xterm'
 
   server='
+  go
   mc 
   vim 
   pydf 
@@ -1709,7 +1713,7 @@ setup_extra_packages()
   then
       all="$server"
   else
-      all="$arch $bluetooth $browser $editor $filesystem $hardware $kernel $fonts $misc $network $xorg"
+      all="$arch $bluetooth $browser $editor $filesystem $hardware $kernel $fonts $misc $network $xorg $dev"
   fi
 
   title 'Base System Setup > Extra Packages'
