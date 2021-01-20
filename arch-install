@@ -1508,10 +1508,8 @@ setup_user()
     if [ "$INSTALL_MODE" != 'net' ]
     then
       cp -r "$BI_PATH/data/user/." "$CHROOT/home/$user/." > $VERBOSE 2>&1
-      chroot $CHROOT chown -R "$user":"$user" "/home/$user" > $VERBOSE 2>&1
     else
-      cp -r "$BI_PATH/data/root/." "$CHROOT/root/." > $VERBOSE 2>&1
-      chroot $CHROOT chown -R "$user":"$user" "/home/$user" > $VERBOSE 2>&1
+      cp -r "$BI_PATH/data/root/." "$CHROOT/home/$user/." > $VERBOSE 2>&1
     fi
   fi
 
@@ -1787,7 +1785,7 @@ setup_base_system()
   if [ -n "$NORMAL_USER" ]
   then
     setup_user "$NORMAL_USER"
-    sleep_clear 3
+    sleep_clear "$DELAY_1"
   fi
 
   reinitialize_keyring
@@ -1829,7 +1827,9 @@ update_etc()
   printf "\n\n"
 
   # /etc/*
-  cp -r "$BI_PATH/data/etc/"{arch-release,motd,os-release,sysctl.d,systemd} "$CHROOT/etc/." > $VERBOSE 2>&1
+  cp -rvf "$BI_PATH/data/etc/"{arch-release,motd,os-release,sysctl.d,systemd} "$CHROOT/etc/" > $VERBOSE 2>&1
+  
+  sleep "$DELAY_10"
 
   return $SUCCESS
 }
@@ -1850,8 +1850,7 @@ ask_mirror_arch()
     pacman -Sy --noconfirm > $VERBOSE 2>&1
     pacman -S --needed --noconfirm reflector > $VERBOSE 2>&1
     yes | pacman -Scc > $VERBOSE 2>&1
-    reflector --verbose --protocol https --sort rate -l 3 \
-      --save /etc/pacman.d/mirrorlist > $VERBOSE 2>&1
+    reflector --verbose --protocol https --sort rate -l 3 --save /etc/pacman.d/mirrorlist > $VERBOSE 2>&1
   else
     printf "\n"
     warn 'Using Worldwide mirror server'
@@ -1871,7 +1870,9 @@ ask_mirror_arch()
 pass_mirror_conf()
 {
   mkdir -p "$CHROOT/etc/pacman.d/" > $VERBOSE 2>&1
-  cp -f /etc/pacman.d/mirrorlist "$CHROOT/etc/pacman.d/mirrorlist" > $VERBOSE 2>&1
+  cp -fv /etc/pacman.d/mirrorlist "$CHROOT/etc/pacman.d/mirrorlist" > $VERBOSE 2>&1
+  
+  sleep "$DELAY_10"
 }
 
 
@@ -1899,25 +1900,34 @@ setup_display_manager(){
   # install slim package
   chroot $CHROOT pacman -S slim --needed --overwrite='*' --noconfirm > $VERBOSE 2>&1
   
-  printf "> Config Files ...\n"
-  cp -rv "$BI_PATH/data/etc/X11" "$CHROOT/etc/." > $VERBOSE 2>&1
- 
-  sleep 300
+  printf "\n\n"
   
-  printf "> Delete Old Theme ...\n"
+  printf ">>> Config Files ...\n"
+  cp -rvf "$BI_PATH/data/etc/X11" "$CHROOT/etc/" > $VERBOSE 2>&1
+ 
+  sleep 30
+  
+  printf ">>> Delete Old Theme ...\n"
   chroot $CHROOT rm -rf /usr/share/slim/themes/default/* > $VERBOSE 2>&1
   
-  sleep 300
+  sleep 10
   
-  printf "> Config New Theme ...\n"
-  cp -rvf "$BI_PATH/data/usr/share/slim/themes" "$CHROOT/usr/." > $VERBOSE 2>&1
+  printf ">>> Check Content ...\n"
+  chroot $CHROOT ls -la /usr/share/slim/themes/default/ > $VERBOSE 2>&1
   
-  sleep 300
+  sleep 10
+  
+  printf ">>> Config New Theme ...\n"
+  cp -rvf "$BI_PATH/data/usr/share/slim/themes" "$CHROOT/usr/" > $VERBOSE 2>&1
+  
+  sleep 30
  
-  printf "> Enable Slim ...\n"
+  printf ">>> Enable Slim ...\n"
   chroot $CHROOT systemctl enable slim > $VERBOSE 2>&1
   
-  sleep 300
+  printf "> DONE!\n"
+  
+  sleep 10
 
   return $SUCCESS
 }
@@ -1936,21 +1946,22 @@ setup_window_managers()
   printf "> Create Folder ...\n"  
   chroot $CHROOT mkdir -p /usr/share/wallpaper > $VERBOSE 2>&1
   
-  sleep 300
+  sleep 30
 
-  printf "> Copy Wallpaper ...\n"
-  cp -vr "$BI_PATH/data/usr/share/wallpaper/wall.jpg" "$CHROOT/usr/share/wallpaper/." > $VERBOSE 2>&1
+  printf ">>> Copy Wallpaper ...\n"
+  cp -vrf "$BI_PATH/data/usr/share/wallpaper/wall.jpg" "$CHROOT/usr/share/wallpaper/" > $VERBOSE 2>&1
 
-  sleep 300
+  sleep 30
 
-  printf "> Delete Unused Files ...\n"
+  printf ">>> Delete Unused Files ...\n"
+  chroot $CHROOT ls -la /usr/share/xsessions/ > $VERBOSE 2>&1
   chroot $CHROOT rm /usr/share/xsessions/i3-with-shmlog.desktop > $VERBOSE 2>&1
   
-  sleep 300
+  sleep 30
   
-  printf "> DONE!\n"
+  printf ">>> DONE!\n"
   
-  sleep 300
+  sleep 30
   
   return $SUCCESS
 }
