@@ -1565,9 +1565,9 @@ install_yay()
 # install extra (missing) packages
 setup_extra_packages()
 {
+
   arch='
-  arch-install-scripts 
-  pkgfile'
+  aurpublish'
 
   bluetooth='
   bluez 
@@ -1585,6 +1585,7 @@ setup_extra_packages()
   vim'
 
   filesystem='
+  gparted
   cifs-utils 
   dmraid 
   dosfstools 
@@ -1600,40 +1601,33 @@ setup_extra_packages()
   partimage'
 
   fonts='
-  ttf-dejavu 
-  ttf-indic-otf 
-  ttf-liberation 
+  ttf-dejavu  
   xorg-fonts-misc'
   
   hardware='
-  amd-ucode 
   intel-ucode'
 
-  kernel=''
+  kernel='rfkill'
 
   misc='
+  mupdf
+  tig
   mc
   go
   acpi 
-  alsa-utils 
-  b43-fwcutter 
+  alsa-utils
   bash-completion 
-  bc 
-  cmake 
-  ctags 
+  cmake
   expac
   feh 
   git 
-  gpm 
   haveged 
   hdparm
   htop 
   inotify-tools 
   ipython 
   irssi
-  linux-atm 
   lsof 
-  mercurial 
   mesa 
   mlocate 
   moreutils 
@@ -1646,8 +1640,6 @@ setup_extra_packages()
   smartmontools 
   strace 
   tmux 
-  udisks2 
-  unace 
   unrar
   unzip 
   upower 
@@ -1661,18 +1653,17 @@ setup_extra_packages()
   lxrandr 
   newsboat 
   fish 
-  sakura 
-  xorg-setxkbmap 
+  sakura  
   python3 
   moc
   man
   man-pages'
 
   network='
+  netctl
   net-tools
-  atftp 
+  gftp
   bind-tools 
-  bridge-utils
   darkhttpd 
   dhclient 
   dhcpcd 
@@ -1680,61 +1671,40 @@ setup_extra_packages()
   dnscrypt-proxy 
   dnsmasq 
   dnsutils 
-  fwbuilder 
   gnu-netcat 
-  ipw2100-fw 
-  ipw2200-fw 
   iw
-  iwd lftp 
+  iwd 
   nfs-utils 
   ntp 
   openconnect 
   openssh 
   openvpn 
-  ppp 
-  pptpclient 
-  rfkill
-  rp-pppoe 
   socat 
-  vpnc 
   wget 
   wireless_tools 
-  wpa_supplicant 
-  wvdial 
-  xl2tpd
+  wpa_supplicant
   inetutils'
-
+ 
   xorg='
-  rxvt-unicode 
-  xf86-video-amdgpu 
-  xf86-video-ati
-  xf86-video-dummy 
-  xf86-video-fbdev 
-  xf86-video-intel 
-  xf86-video-nouveau
-  xf86-video-openchrome 
-  xf86-video-sisusb 
-  xf86-video-vesa 
-  xf86-video-vmware
-  xf86-video-voodoo 
+  xorg-setxkbmap
   xorg-server 
-  xorg-xbacklight 
-  xorg-xinit xterm'
+  xorg-xinit
+  xterm'
 
   server='
   mc 
   vim 
   pydf 
   openssh 
-  git 
-  tmux 
-  netctl 
+  git
+  tmux
+  netctl
   gnu-netcat 
   dhcpcd 
   dhclient 
-  man 
+  man
   man-pages
-  tig 
+  tig
   htop
   tor 
   dnsutils 
@@ -1745,8 +1715,7 @@ setup_extra_packages()
   wget 
   inetutils 
   dmidecode 
-  nmap
-  nginx'
+  nmap'
 
   if [ "$INSTALL_MODE" != "gui" ]
   then
