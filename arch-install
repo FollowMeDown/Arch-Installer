@@ -1235,7 +1235,7 @@ install_base_packages()
   warn 'This can take a while, please wait...'
   printf "\n"
 
-  pacstrap $CHROOT intel-ucode linux-firmware base base-devel linux-hardened linux-hardened-headers terminus-font > $VERBOSE 2>&1
+  pacstrap $CHROOT intel-ucode linux-firmware base base-devel linux-hardened linux-hardened-headers terminus-font btrfs-progs> $VERBOSE 2>&1
   chroot $CHROOT pacman -Syy --noconfirm --overwrite='*' > $VERBOSE 2>&1
 
   return $SUCCESS
@@ -1598,8 +1598,7 @@ setup_extra_packages()
   hardware='
   rfkill'
 
-  kernel='
-  btrfs-progs'
+  kernel=''
 
   misc='
   mupdf
