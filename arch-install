@@ -1570,8 +1570,7 @@ setup_extra_packages()
   aurpublish'
 
   bluetooth='
-  bluez 
-  bluez-hid2hci 
+  bluez
   bluez-tools 
   bluez-utils'
 
@@ -1585,20 +1584,9 @@ setup_extra_packages()
   vim'
 
   filesystem='
-  gparted
-  cifs-utils 
-  dmraid 
   dosfstools 
-  exfat-utils 
-  f2fs-tools
-  gpart 
-  gptfdisk 
-  mtools 
-  nilfs-utils 
-  ntfs-3g 
-  partclone 
-  parted 
-  partimage'
+  exfat-utils
+  ntfs-3g'
 
   fonts='
   ttf-dejavu  
