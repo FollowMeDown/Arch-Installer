@@ -38,7 +38,7 @@ BLINK="$(tput blink)"
 NC="$(tput sgr0)"
 
 # installation mode (gui/net)
-INSTALL_MODE='net'
+INSTALL_MODE='gui'
 
 # install modes
 INSTALL_REPO='1'
