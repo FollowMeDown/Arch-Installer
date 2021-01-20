@@ -1237,6 +1237,8 @@ install_base_packages()
 
   pacstrap $CHROOT intel-ucode linux-firmware base base-devel linux-hardened linux-hardened-headers terminus-font btrfs-progs> $VERBOSE 2>&1
   chroot $CHROOT pacman -Syy --noconfirm --overwrite='*' > $VERBOSE 2>&1
+  
+  sleep "$DELAY_10"
 
   return $SUCCESS
 }
