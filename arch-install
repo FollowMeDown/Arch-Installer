@@ -1901,16 +1901,13 @@ setup_display_manager(){
 
   # config files
   cp -r "$BI_PATH/data/etc/X11" "$CHROOT/etc/." > $VERBOSE 2>&1
-
-  # delete default theme
-  chroot $CHROOT rm -rf /usr/share/slim/themes/default/ > $VERBOSE 2>&1
-  chroot $CHROOT mkdir -p /usr/share/slim/themes/default > $VERBOSE 2>&1
-
-  # copy new theme
-  cp -r "$BI_PATH/data/usr/share/slim/themes/default/*" "$CHROOT/usr/share/slim/themes/default/." > $VERBOSE 2>&1
-
+ 
+  sleep 10
+ 
   # enable in systemd
   chroot $CHROOT systemctl enable slim > $VERBOSE 2>&1
+  
+  sleep 10
 
   return $SUCCESS
 }
