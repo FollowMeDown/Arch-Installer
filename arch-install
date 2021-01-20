@@ -1745,7 +1745,7 @@ setup_extra_packages()
   warn 'This can take a while, please wait...'
   printf "\n"
 
-  chroot $CHROOT pacman -S --needed --overwrite='*' --noconfirm $all > $VERBOSE 2>&1
+  chroot $CHROOT pacman -S --needed --overwrite='*' $all > $VERBOSE 2>&1
 
   return $SUCCESS
 }
