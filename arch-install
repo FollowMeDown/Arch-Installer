@@ -1235,7 +1235,7 @@ install_base_packages()
   warn 'This can take a while, please wait...'
   printf "\n"
 
-  pacstrap $CHROOT base base-devel btrfs-progs linux-hardened linux-hardened-headers terminus-font > $VERBOSE 2>&1
+  pacstrap $CHROOT intel-ucode linux-firmware base base-devel linux-hardened linux-hardened-headers terminus-font > $VERBOSE 2>&1
   chroot $CHROOT pacman -Syy --noconfirm --overwrite='*' > $VERBOSE 2>&1
 
   return $SUCCESS
@@ -1364,6 +1364,8 @@ setup_initramfs()
   warn 'This can take a while, please wait...'
   printf "\n"
   chroot $CHROOT mkinitcpio -P > $VERBOSE 2>&1
+  
+  sleep "$DELAY_10"
 
   return $SUCCESS
 }
@@ -1565,8 +1567,7 @@ setup_extra_packages()
 {
  
   dev='
-  go
-  '
+  go'
   
   arch='
   aurpublish'
@@ -1595,12 +1596,10 @@ setup_extra_packages()
   xorg-fonts-misc'
   
   hardware='
-  intel-ucode
   rfkill'
 
   kernel='
-  linux-firmware
-  '
+  btrfs-progs'
 
   misc='
   mupdf
@@ -1701,9 +1700,9 @@ setup_extra_packages()
   htop
   tor 
   dnsutils 
+  dialog
   make
-  dialog 
-  cmake 
+  cmake
   net-tools 
   wget 
   inetutils 
