@@ -1898,16 +1898,26 @@ setup_display_manager(){
 
   # install slim package
   chroot $CHROOT pacman -S slim --needed --overwrite='*' --noconfirm > $VERBOSE 2>&1
-
-  # config files
-  cp -r "$BI_PATH/data/etc/X11" "$CHROOT/etc/." > $VERBOSE 2>&1
+  
+  printf "> Config Files ...\n"
+  cp -rv "$BI_PATH/data/etc/X11" "$CHROOT/etc/." > $VERBOSE 2>&1
  
-  sleep 10
+  sleep 300
+  
+  printf "> Delete Old Theme ...\n"
+  chroot $CHROOT rm -rf /usr/share/slim/themes/default/* > $VERBOSE 2>&1
+  
+  sleep 300
+  
+  printf "> Config New Theme ...\n"
+  cp -rvf "$BI_PATH/data/usr/share/slim/themes" "$CHROOT/usr/." > $VERBOSE 2>&1
+  
+  sleep 300
  
-  # enable in systemd
+  printf "> Enable Slim ...\n"
   chroot $CHROOT systemctl enable slim > $VERBOSE 2>&1
   
-  sleep 10
+  sleep 300
 
   return $SUCCESS
 }
@@ -1923,14 +1933,24 @@ setup_window_managers()
 
   chroot $CHROOT pacman -Sy i3-gaps i3status i3lock rofi --needed --overwrite='*' --noconfirm > $VERBOSE 2>&1
 
-  # create folder
+  printf "> Create Folder ...\n"  
   chroot $CHROOT mkdir -p /usr/share/wallpaper > $VERBOSE 2>&1
+  
+  sleep 300
 
-  # copy wallpaper
-  cp -r "$BI_PATH/data/usr/share/wallpaper/wall.jpg" "$CHROOT/usr/share/wallpaper/." > $VERBOSE 2>&1
+  printf "> Copy Wallpaper ...\n"
+  cp -vr "$BI_PATH/data/usr/share/wallpaper/wall.jpg" "$CHROOT/usr/share/wallpaper/." > $VERBOSE 2>&1
 
-  # delete unused .desktop
+  sleep 300
+
+  printf "> Delete Unused Files ...\n"
   chroot $CHROOT rm /usr/share/xsessions/i3-with-shmlog.desktop > $VERBOSE 2>&1
+  
+  sleep 300
+  
+  printf "> DONE!\n"
+  
+  sleep 300
   
   return $SUCCESS
 }
