@@ -30,7 +30,6 @@ VERBOSE='/dev/null'
 WHITE="$(tput setaf 7)"
 BLUEB="$(tput bold ; tput setaf 4)"
 MAGENTA="$(tput bold ; tput setaf 5)"
-CYAN="$(tput setaf 6)"
 CYANB="$(tput bold ; tput setaf 6)"
 RED="$(tput setaf 1)"
 YELLOW="$(tput setaf 3)"
@@ -40,8 +39,6 @@ NC="$(tput sgr0)"
 # installation mode (gui/net)
 INSTALL_MODE='gui'
 
-# install modes
-INSTALL_REPO='1'
 
 # chosen locale
 LOCALE=''
@@ -137,8 +134,7 @@ CHROOT='/mnt'
 NORMAL_USER=''
 
 # default ArchLinux repository URL
-ARCH_REPO_URL='https://archlinux.surlyjake.com/archlinux/$repo/os/$arch'
-ARCH_REPO_URL="$ARCH_REPO_URL http://mirrors.evowise.com/archlinux/\$repo/os/\$arch"
+ARCH_REPO_URL="https://archlinux.surlyjake.com/archlinux/$repo/os/$arch"
 ARCH_REPO_URL="$ARCH_REPO_URL http://mirror.rackspace.com/archlinux/\$repo/os/\$arch"
 
 # X (display + window managers ) setup - default: false
@@ -512,6 +508,8 @@ enable_pacman_misc()
   sed -i '37a DisableDownloadTimeout' "$path/etc/pacman.conf"
 
   # put here more misc options if necessary
+
+  sleep 30
 
   return $SUCCESS
 }
@@ -1749,7 +1747,7 @@ setup_extra_packages()
   warn 'This can take a while, please wait...'
   printf "\n"
 
-  chroot $CHROOT pacman -S --needed --overwrite='*' $all > $VERBOSE 2>&1
+  chroot $CHROOT pacman -S --needed --overwrite='*' "$all" > $VERBOSE 2>&1
 
   return $SUCCESS
 }
@@ -1865,7 +1863,7 @@ ask_mirror_arch()
     echo -e "## Arch Linux repository Worldwide mirrorlist\n\n" \
       > /etc/pacman.d/mirrorlist
 
-    for wore in $AR_REPO_URL
+    for wore in $ARCH_REPO_URL
     do
       echo "Server = $wore" >> /etc/pacman.d/mirrorlist
     done
@@ -2234,6 +2232,8 @@ main()
 
   # arch setup
   setup_arch
+  sleep_clear "$DELAY_1"
+  enable_pacman_misc "chroot"
   sleep_clear "$DELAY_1"
 
   # epilog
