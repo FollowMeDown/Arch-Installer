@@ -1575,6 +1575,7 @@ setup_extra_packages()
 
   misc='
   neofetch
+  transmission-gtk
   mupdf
   tig
   mc
