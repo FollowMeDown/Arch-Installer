@@ -21,7 +21,6 @@ FAILURE=1
 
 #install delay
 DELAY_1="1"
-DELAY_10="10"
 
 # verbose mode - default: quiet
 VERBOSE='/dev/null'
@@ -30,7 +29,6 @@ VERBOSE='/dev/null'
 WHITE="$(tput setaf 7)"
 BLUEB="$(tput bold ; tput setaf 4)"
 MAGENTA="$(tput bold ; tput setaf 5)"
-CYAN="$(tput setaf 6)"
 CYANB="$(tput bold ; tput setaf 6)"
 RED="$(tput setaf 1)"
 YELLOW="$(tput setaf 3)"
@@ -39,9 +37,6 @@ NC="$(tput sgr0)"
 
 # installation mode (gui/net)
 INSTALL_MODE='gui'
-
-# install modes
-INSTALL_REPO='1'
 
 # chosen locale
 LOCALE=''
@@ -137,9 +132,8 @@ CHROOT='/mnt'
 NORMAL_USER=''
 
 # default ArchLinux repository URL
-ARCH_REPO_URL='https://archlinux.surlyjake.com/archlinux/$repo/os/$arch'
-ARCH_REPO_URL="$ARCH_REPO_URL http://mirrors.evowise.com/archlinux/\$repo/os/\$arch"
-ARCH_REPO_URL="$ARCH_REPO_URL http://mirror.rackspace.com/archlinux/\$repo/os/\$arch"
+ARCH_REPO_URL="http://mirror.checkdomain.de/archlinux/$repo/os/$arch"
+ARCH_REPO_URL="$ARCH_REPO_URL http://ftp.halifax.rwth-aachen.de/archlinux/\$repo/os/\$arch"
 
 # X (display + window managers ) setup - default: false
 X_SETUP=$FALSE
@@ -156,6 +150,7 @@ WLAN_PASSPHRASE=''
 # check boot mode
 BOOT_MODE=''
 
+#######FUNC#######
 
 # Exit on CTRL + c
 ctrl_c() {
@@ -371,7 +366,6 @@ set_locale()
   then
     echo
     warn 'Setting default locale: en_US.UTF-8'
-    sleep "$DELAY_1"
     LOCALE='en_US.UTF-8'
   fi
   localectl set-locale "LANG=$LOCALE"
@@ -426,7 +420,6 @@ set_keymap()
   then
     echo
     warn 'Setting default keymap: de'
-    sleep "$DELAY_1"
     KEYMAP='de'
   fi
   localectl set-keymap --no-convert "$KEYMAP"
@@ -726,11 +719,7 @@ net_conf_wlan()
 
   warn 'We need to wait a bit for wpa_supplicant and dhcpcd'
 
-  sleep "$DELAY_1"
-
   dhcpcd "$dhcp_opts" -i "$NET_IF" > $VERBOSE 2>&1
-
-  sleep "$DELAY_1"
 
   return $SUCCESS
 }
@@ -763,6 +752,7 @@ ask_dualboot()
       DUALBOOT=$FALSE
     fi
   done
+  
   return $SUCCESS
 }
 
@@ -782,6 +772,7 @@ ask_luks()
     fi
     sleep_clear "$DELAY_1"
   done
+  
   return $SUCCESS
 }
 
@@ -820,7 +811,6 @@ ask_hd_dev()
     fi
     clear
   done
-
 
   return $SUCCESS
 }
@@ -874,6 +864,7 @@ zero_part()
     err 'You are booting in UEFI mode but not EFI partition was created, make sure you select the "EFI System" type for your EFI partition.'
     zero_part
   fi
+  
   return $SUCCESS
 }
 
@@ -1122,17 +1113,13 @@ make_boot_partition()
 make_partitions()
 {
   make_boot_partition
-  sleep_clear "$DELAY_1"
-
   make_root_partition
-  sleep_clear "$DELAY_1"
-
   if [ "$SWAP_PART" != "none" ]
   then
     make_swap_partition
     sleep_clear "$DELAY_1"
   fi
-
+  
   return $SUCCESS
 }
 
@@ -1220,8 +1207,6 @@ check_space()
   fi
 
   return $SUCCESS
-
-
 }
 
 
@@ -1237,8 +1222,6 @@ install_base_packages()
 
   pacstrap $CHROOT base base-devel> $VERBOSE 2>&1
   chroot $CHROOT pacman -S linux-firmware linux linux-headers terminus-font btrfs-progs --noconfirm --overwrite='*' > $VERBOSE 2>&1
-  
-  sleep "$DELAY_10"
 
   return $SUCCESS
 }
@@ -1314,14 +1297,12 @@ setup_time()
     if [ $? -eq 1 ]
     then
       warn 'Do you live on Mars? Setting default time zone...'
-      sleep "$DELAY_1"
       default_time
     else
       wprintf "\n[+] Time zone setup correctly\n"
     fi
   else
     wprintf "\n[+] Setting up default time and timezone\n"
-    sleep "$DELAY_1"
     default_time
   fi
 
@@ -1367,8 +1348,6 @@ setup_initramfs()
   printf "\n"
   chroot $CHROOT mkinitcpio -P > $VERBOSE 2>&1
   
-  sleep "$DELAY_10"
-
   return $SUCCESS
 }
 
@@ -1423,18 +1402,18 @@ setup_bootloader()
     if [ $LUKS = $TRUE ]
     then
       cat >> "$CHROOT/boot/loader/entries/arch.conf" << EOF
-title   Arch Linux
-linux   /vmlinuz-linux
-initrd    /initramfs-linux.img
-options   cryptdevice=UUID=$uuid:$CRYPT_ROOT root=/dev/mapper/$CRYPT_ROOT rw
+title       Arch Linux
+linux       /vmlinuz-linux
+initrd      /initramfs-linux.img
+options     cryptdevice=UUID=$uuid:$CRYPT_ROOT root=/dev/mapper/$CRYPT_ROOT rw
 EOF
 
     else
       cat >> "$CHROOT/boot/loader/entries/arch.conf" << EOF
-title   Arch Linux
-linux   /vmlinuz-linux
-initrd    /initramfs-linux.img
-options   root=UUID=$uuid rw
+title       Arch Linux
+linux       /vmlinuz-linux
+initrd      /initramfs-linux.img
+options     root=UUID=$uuid rw
 EOF
     fi
   else
@@ -1464,7 +1443,6 @@ EOF
     cp -f "$BI_PATH/data/boot/grub/splash.png" "$CHROOT/boot/grub/splash.png"
 
     chroot $CHROOT grub-mkconfig -o /boot/grub/grub.cfg > $VERBOSE 2>&1
-
   fi
 
   return $SUCCESS
@@ -1582,12 +1560,10 @@ setup_extra_packages()
   bluez-utils'
 
   browser='
-  firefox
-  '
+  firefox'
 
   editor='
   hexedit 
-  nano 
   vim'
 
   filesystem='
@@ -1699,9 +1675,6 @@ setup_extra_packages()
   gnu-netcat 
   dhcpcd 
   dhclient 
-  man
-  man-pages
-  tig
   htop
   tor 
   dnsutils 
@@ -1749,7 +1722,7 @@ setup_extra_packages()
   warn 'This can take a while, please wait...'
   printf "\n"
 
-  chroot $CHROOT pacman -S --needed --overwrite='*' $all > $VERBOSE 2>&1
+  chroot $CHROOT pacman -S --noconfirm --needed --overwrite='*' "$all" > $VERBOSE 2>&1
 
   return $SUCCESS
 }
@@ -1758,52 +1731,38 @@ setup_extra_packages()
 # perform system base setup/configurations
 setup_base_system()
 {
-
   pass_mirror_conf
   sleep_clear "$DELAY_1"
-
   setup_resolvconf
   sleep_clear "$DELAY_1"
-
   install_base_packages
   sleep_clear "$DELAY_1"
-
   setup_fstab
   sleep_clear "$DELAY_1"
-
   setup_proc_sys_dev
   sleep_clear "$DELAY_1"
-
   setup_locale
   sleep_clear "$DELAY_1"
-
   setup_initramfs
   sleep_clear "$DELAY_1"
-
   setup_hostname
   sleep_clear "$DELAY_1"
-
   setup_user "root"
   sleep_clear "$DELAY_1"
-
   ask_user_account
   sleep_clear "$DELAY_1"
 
   if [ -n "$NORMAL_USER" ]
   then
     setup_user "$NORMAL_USER"
-    sleep_clear "$DELAY_1"
   fi
 
   reinitialize_keyring
   sleep_clear "$DELAY_1"
-
   setup_extra_packages
   sleep_clear "$DELAY_1"
-
   install_yay
   sleep_clear "$DELAY_1"
-
   setup_bootloader
   sleep_clear "$DELAY_1"
 
@@ -1836,8 +1795,6 @@ update_etc()
   # /etc/*
   cp -rvf "$BI_PATH/data/etc/"{arch-release,motd,os-release,sysctl.d,systemd} "$CHROOT/etc/" > $VERBOSE 2>&1
   
-  sleep "$DELAY_10"
-
   return $SUCCESS
 }
 
@@ -1865,7 +1822,7 @@ ask_mirror_arch()
     echo -e "## Arch Linux repository Worldwide mirrorlist\n\n" \
       > /etc/pacman.d/mirrorlist
 
-    for wore in $AR_REPO_URL
+    for wore in $ARCH_REPO_URL
     do
       echo "Server = $wore" >> /etc/pacman.d/mirrorlist
     done
@@ -1905,39 +1862,12 @@ setup_display_manager(){
   # install slim package
   chroot $CHROOT pacman -S slim --needed --overwrite='*' --noconfirm > $VERBOSE 2>&1
   
-  printf "\n\n"
-  
-  printf ">>> Config Files ...\n"
-  cp -rvf "$BI_PATH/data/etc/X11/" "$CHROOT/etc/X11/" > $VERBOSE 2>&1
- 
-  sleep 30
-  
-  printf ">>> Delete Old Theme ...\n"
+  cp -rf "$BI_PATH/data/etc/X11/" "$CHROOT/etc/X11/" > $VERBOSE 2>&1
   chroot $CHROOT rm -rf /usr/share/slim/themes/default > $VERBOSE 2>&1
-  
-  sleep 30
- 
-  printf ">>> Check Content ...\n"
   chroot $CHROOT ls -la /usr/share/slim/themes/ > $VERBOSE 2>&1
-  
-  sleep 30
-  
-  printf ">>> Config New Theme ...\n"
-  cp -rvf "$BI_PATH/data/usr/share/slim/themes/default/" "$CHROOT/usr/share/slim/themes/default/" > $VERBOSE 2>&1
-  
-  sleep 30
-  
-  printf ">>> Check Content ...\n"
+  cp -rf "$BI_PATH/data/usr/share/slim/themes/default/" "$CHROOT/usr/share/slim/themes/default/" > $VERBOSE 2>&1
   chroot $CHROOT ls -la /usr/share/slim/themes/default/ > $VERBOSE 2>&1
-  
-  sleep 30
- 
-  printf ">>> Enable Slim ...\n"
   chroot $CHROOT systemctl enable slim > $VERBOSE 2>&1
-  
-  printf "> DONE!\n"
-  
-  sleep 30
 
   return $SUCCESS
 }
@@ -1952,26 +1882,11 @@ setup_window_managers()
   printf "\n\n"
 
   chroot $CHROOT pacman -Sy i3-gaps i3status i3lock rofi --needed --overwrite='*' --noconfirm > $VERBOSE 2>&1
-
-  printf "> Create Folder ...\n"  
   chroot $CHROOT mkdir -p /usr/share/wallpaper > $VERBOSE 2>&1
-  
-  sleep 30
-
-  printf ">>> Copy Wallpaper ...\n"
-  cp -vrf "$BI_PATH/data/usr/share/wallpaper/wall.jpg" "$CHROOT/usr/share/wallpaper/" > $VERBOSE 2>&1
+  cp -rf "$BI_PATH/data/usr/share/wallpaper/wall.jpg" "$CHROOT/usr/share/wallpaper/" > $VERBOSE 2>&1
   chroot $CHROOT ls -la /usr/share/wallpaper/ > $VERBOSE 2>&1
-  
-  sleep 30
-
-  printf ">>> Delete Unused Files ...\n"
   chroot $CHROOT rm /usr/share/xsessions/i3-with-shmlog.desktop > $VERBOSE 2>&1
   chroot $CHROOT ls -la /usr/share/xsessions/ > $VERBOSE 2>&1
-  sleep 30
-  
-  printf ">>> DONE!\n"
-  
-  sleep 30
   
   return $SUCCESS
 }
@@ -2025,7 +1940,6 @@ setup_arch()
 {
   update_etc
   sleep_clear "$DELAY_1"
-
   ask_x_setup
   sleep_clear "$DELAY_1"
 
