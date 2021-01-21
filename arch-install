@@ -738,9 +738,9 @@ net_conf_wlan()
 check_inet_conn()
 {
   title 'Network Setup > Connection Check'
-  wprintf '[+] Checking for Internet connection > '
+  wprintf '[+] Checking for Internet connection ... '
 
-  if ! curl -s http://www.yahoo.com/ > $VERBOSE
+  if ! curl -s http://www.duckduckgo.com/ > $VERBOSE
   then
     err 'No Internet connection! Check your network (settings).'
     exit $FAILURE
@@ -780,6 +780,7 @@ ask_luks()
     fi
     sleep_clear "$DELAY_1"
   done
+  
   return $SUCCESS
 }
 
@@ -818,7 +819,6 @@ ask_hd_dev()
     fi
     clear
   done
-
 
   return $SUCCESS
 }
