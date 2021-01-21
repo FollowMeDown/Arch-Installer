@@ -39,7 +39,6 @@ NC="$(tput sgr0)"
 # installation mode (gui/net)
 INSTALL_MODE='gui'
 
-
 # chosen locale
 LOCALE=''
 
@@ -134,8 +133,8 @@ CHROOT='/mnt'
 NORMAL_USER=''
 
 # default ArchLinux repository URL
-ARCH_REPO_URL="https://archlinux.surlyjake.com/archlinux/$repo/os/$arch"
-ARCH_REPO_URL="$ARCH_REPO_URL http://mirror.rackspace.com/archlinux/\$repo/os/\$arch"
+ARCH_REPO_URL="http://mirror.archlinux.guru/archlinux/\$repo/os/\$arch"
+ARCH_REPO_URL="$ARCH_REPO_URL http://mirror.archlinux.cool/archlinux/\$repo/os/\$arch"
 
 # X (display + window managers ) setup - default: false
 X_SETUP=$FALSE
@@ -509,8 +508,6 @@ enable_pacman_misc()
 
   # put here more misc options if necessary
 
-  sleep 5
-
   return $SUCCESS
 }
 
@@ -738,9 +735,9 @@ net_conf_wlan()
 check_inet_conn()
 {
   title 'Network Setup > Connection Check'
-  wprintf '[+] Checking for Internet connection ... '
+  wprintf '[+] Checking for Internet connection...'
 
-  if ! curl -s http://www.duckduckgo.com/ > $VERBOSE
+  if ! curl -s http://www.yahoo.com/ > $VERBOSE
   then
     err 'No Internet connection! Check your network (settings).'
     exit $FAILURE
@@ -1426,7 +1423,6 @@ linux   /vmlinuz-linux
 initrd    /initramfs-linux.img
 options   cryptdevice=UUID=$uuid:$CRYPT_ROOT root=/dev/mapper/$CRYPT_ROOT rw
 EOF
-
     else
       cat >> "$CHROOT/boot/loader/entries/arch.conf" << EOF
 title   Arch Linux
@@ -1440,7 +1436,6 @@ EOF
     printf "\n\n"
 
     uuid="$(lsblk -o UUID "$ROOT_PART" | sed -n 2p)"
-
     chroot $CHROOT pacman -S grub --noconfirm --overwrite='*' --needed > $VERBOSE 2>&1
 
     if [ $DUALBOOT = $TRUE ]
@@ -1450,24 +1445,21 @@ EOF
 
     if [ $LUKS = $TRUE ]
     then
-      sed -i "s|quiet|cryptdevice=UUID=$uuid:$CRYPT_ROOT root=/dev/mapper/$CRYPT_ROOT quiet|" \
-        "$CHROOT/etc/default/grub"
+      sed -i "s|quiet|cryptdevice=UUID=$uuid:$CRYPT_ROOT root=/dev/mapper/$CRYPT_ROOT quiet|" "$CHROOT/etc/default/grub"
     fi
+
     echo "GRUB_BACKGROUND=\"/boot/grub/splash.png\"" >> "$CHROOT/etc/default/grub"
-
     sed -i 's/#GRUB_COLOR_/GRUB_COLOR_/g' "$CHROOT/etc/default/grub"
-
     chroot $CHROOT grub-install --target=i386-pc "$HD_DEV" > $VERBOSE 2>&1
-
     cp -f "$BI_PATH/data/boot/grub/splash.png" "$CHROOT/boot/grub/splash.png"
-
     chroot $CHROOT grub-mkconfig -o /boot/grub/grub.cfg > $VERBOSE 2>&1
 
   fi
 
+sleep_clear "$DELAY_10"
+
   return $SUCCESS
 }
-
 
 
 # ask for normal user account to setup
@@ -1481,6 +1473,7 @@ ask_user_account()
 
   return $SUCCESS
 }
+
 
 # setup user account, password and environment
 setup_user()
@@ -1535,6 +1528,7 @@ setup_user()
   return $SUCCESS
 }
 
+
 # reinitialize arch keyring
 reinitialize_keyring()
 {
@@ -1580,8 +1574,7 @@ setup_extra_packages()
   bluez-utils'
 
   browser='
-  firefox
-  '
+  firefox'
 
   editor='
   hexedit 
@@ -1728,6 +1721,7 @@ setup_extra_packages()
   printf "
   > Server      : $(echo "$server" | wc -w) packages
   \n"
+
   else printf "
   > ArchLinux   : $(echo "$arch" | wc -w) packages
   > Browser     : $(echo "$browser" | wc -w) packages
@@ -1746,7 +1740,9 @@ setup_extra_packages()
   warn 'This can take a while, please wait...'
   printf "\n"
 
-  chroot $CHROOT pacman -S --needed --overwrite='*' "$all" > $VERBOSE 2>&1
+  chroot $CHROOT pacman -S --needed --noconfirm --overwrite='*' $all > $VERBOSE 2>&1
+ 
+  sleep "$DELAY_10"
 
   return $SUCCESS
 }
@@ -1796,7 +1792,7 @@ setup_base_system()
   sleep_clear "$DELAY_1"
 
   setup_extra_packages
-  sleep_clear "$DELAY_1"
+  sleep_clear "$DELAY_10"
 
   install_yay
   sleep_clear "$DELAY_1"
@@ -1833,7 +1829,7 @@ update_etc()
   # /etc/*
   cp -rvf "$BI_PATH/data/etc/"{arch-release,motd,os-release,sysctl.d,systemd} "$CHROOT/etc/" > $VERBOSE 2>&1
   
-  sleep "$DELAY_10"
+  sleep "$DELAY_1"
 
   return $SUCCESS
 }
@@ -1901,41 +1897,11 @@ setup_display_manager(){
 
   # install slim package
   chroot $CHROOT pacman -S slim --needed --overwrite='*' --noconfirm > $VERBOSE 2>&1
-  
-  printf "\n\n"
-  
-  printf ">>> Config Files ...\n"
-  cp -rvf "$BI_PATH/data/etc/X11/" "$CHROOT/etc/X11/" > $VERBOSE 2>&1
- 
-  sleep 30
-  
-  printf ">>> Delete Old Theme ...\n"
+  cp -rf "$BI_PATH/data/etc/X11/" "$CHROOT/etc/X11/" > $VERBOSE 2>&1
   chroot $CHROOT rm -rf /usr/share/slim/themes/default > $VERBOSE 2>&1
-  
-  sleep 30
- 
-  printf ">>> Check Content ...\n"
-  chroot $CHROOT ls -la /usr/share/slim/themes/ > $VERBOSE 2>&1
-  
-  sleep 30
-  
-  printf ">>> Config New Theme ...\n"
-  cp -rvf "$BI_PATH/data/usr/share/slim/themes/default/" "$CHROOT/usr/share/slim/themes/default/" > $VERBOSE 2>&1
-  
-  sleep 30
-  
-  printf ">>> Check Content ...\n"
-  chroot $CHROOT ls -la /usr/share/slim/themes/default/ > $VERBOSE 2>&1
-  
-  sleep 30
- 
-  printf ">>> Enable Slim ...\n"
+  cp -rf "$BI_PATH/data/usr/share/slim/themes/default/" "$CHROOT/usr/share/slim/themes/default/" > $VERBOSE 2>&1
   chroot $CHROOT systemctl enable slim > $VERBOSE 2>&1
   
-  printf "> DONE!\n"
-  
-  sleep 30
-
   return $SUCCESS
 }
 
@@ -1949,26 +1915,9 @@ setup_window_managers()
   printf "\n\n"
 
   chroot $CHROOT pacman -Sy i3-gaps i3status i3lock rofi --needed --overwrite='*' --noconfirm > $VERBOSE 2>&1
-
-  printf "> Create Folder ...\n"  
   chroot $CHROOT mkdir -p /usr/share/wallpaper > $VERBOSE 2>&1
-  
-  sleep 30
-
-  printf ">>> Copy Wallpaper ...\n"
-  cp -vrf "$BI_PATH/data/usr/share/wallpaper/wall.jpg" "$CHROOT/usr/share/wallpaper/" > $VERBOSE 2>&1
-  chroot $CHROOT ls -la /usr/share/wallpaper/ > $VERBOSE 2>&1
-  
-  sleep 30
-
-  printf ">>> Delete Unused Files ...\n"
+  cp -rf "$BI_PATH/data/usr/share/wallpaper/wall.jpg" "$CHROOT/usr/share/wallpaper/" > $VERBOSE 2>&1
   chroot $CHROOT rm /usr/share/xsessions/i3-with-shmlog.desktop > $VERBOSE 2>&1
-  chroot $CHROOT ls -la /usr/share/xsessions/ > $VERBOSE 2>&1
-  sleep 30
-  
-  printf ">>> DONE!\n"
-  
-  sleep 30
   
   return $SUCCESS
 }
@@ -2189,7 +2138,7 @@ main()
   sleep_clear "$DELAY_1"
 
   # self_updater
-  # sleep_clear 3
+  # sleep_clear "$DELAY_10"
 
   # pacman
   ask_mirror_arch
