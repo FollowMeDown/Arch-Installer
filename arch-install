@@ -509,7 +509,7 @@ enable_pacman_misc()
 
   # put here more misc options if necessary
 
-  sleep 30
+  sleep 5
 
   return $SUCCESS
 }
@@ -1233,9 +1233,9 @@ install_base_packages()
   warn 'This can take a while, please wait...'
   printf "\n"
 
-  pacstrap $CHROOT base base-devel> $VERBOSE 2>&1
-  chroot $CHROOT pacman -S linux-firmware linux linux-headers terminus-font btrfs-progs --noconfirm --overwrite='*' > $VERBOSE 2>&1
-  
+  pacstrap $CHROOT base base-devel btrfs-progs linux linux-firmware linux-headers terminus-font > $VERBOSE 2>&1
+  chroot $CHROOT pacman -Syy --noconfirm --overwrite='*' > $VERBOSE 2>&1
+
   sleep "$DELAY_10"
 
   return $SUCCESS
