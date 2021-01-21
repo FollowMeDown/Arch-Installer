@@ -1574,6 +1574,7 @@ setup_extra_packages()
   linux-docs'
 
   misc='
+  neofetch
   mupdf
   tig
   mc
@@ -1786,10 +1787,11 @@ enable_iwd_networkd()
 {
   title 'Arch Linux Setup > Network'
 
-  wprintf '[+] Enabling Iwd and Networkd'
+  wprintf '[+] Enabling IWD and Networkd & SSHD'
   printf "\n\n"
 
   chroot $CHROOT systemctl enable iwd systemd-networkd > $VERBOSE 2>&1
+  chroot $CHROOT systemctl enable sshd systemd-networkd > $VERBOSE 2>&1
 
   return $SUCCESS
 }
@@ -1933,12 +1935,15 @@ update_user_groups()
 {
   title 'Arch Linux Setup > User'
 
-  wprintf "[+] Adding user [ $user ] to groups and sudoers"
+  wprintf "[+] Adding user [ $user ] to SUDO Group"
   printf "\n\n"
 
   # sudoers
-  echo "$user ALL=(ALL) ALL" >> $CHROOT/etc/sudoers > $VERBOSE 2>&1
-
+  chroot $CHROOT cat "$CHROOT/etc/sudoers"
+  echo "$user ALL=(ALL) ALL" >> "$CHROOT/etc/sudoers" > $VERBOSE 2>&1
+  chroot $CHROOT cat "$CHROOT/etc/sudoers"
+  
+  sleep "$DELAY_10"
   return $SUCCESS
 }
 
