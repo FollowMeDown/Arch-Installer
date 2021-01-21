@@ -1585,7 +1585,6 @@ setup_extra_packages()
 
   editor='
   hexedit 
-  nano 
   vim'
 
   filesystem='
