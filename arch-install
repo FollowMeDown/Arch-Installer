@@ -1573,6 +1573,7 @@ setup_extra_packages()
   linux-docs'
 
   misc='
+  telegram-desktop
   keepassxc
   tree
   libreoffice
