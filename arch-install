@@ -1523,7 +1523,6 @@ reinitialize_keyring()
 install_yay()
 {
   title 'Arch Linux Setup > YAY Install'
-
   wprintf '[+] Updating /usr/bin files'
   printf "\n\n"
 
@@ -1574,9 +1573,12 @@ setup_extra_packages()
   linux-docs'
 
   misc='
+  keepassxc
+  tree
+  libreoffice
+  ranger
   neofetch
-  transmission-gtk
-  mupdf
+  evince
   tig
   mc
   acpi 
@@ -1622,9 +1624,13 @@ setup_extra_packages()
   python3 
   moc
   man
-  man-pages'
+  man-pages
+  qrencode'
 
   network='
+  nethogs
+  transmission-gtk
+  wireguard-tools
   netctl
   net-tools
   gftp
@@ -1931,24 +1937,6 @@ setup_vmware_utils()
 }
 
 
-# add user to newly created groups
-update_user_groups()
-{
-  title 'Arch Linux Setup > User'
-
-  wprintf "[+] Adding user [ $user ] to SUDO Group"
-  printf "\n\n"
-
-  # sudoers
-  chroot $CHROOT cat "$CHROOT/etc/sudoers"
-  echo "$user ALL=(ALL) ALL" >> "$CHROOT/etc/sudoers" > $VERBOSE 2>&1
-  chroot $CHROOT cat "$CHROOT/etc/sudoers"
-  
-  sleep "$DELAY_10"
-  return $SUCCESS
-}
-
-
 # setup arch related stuff
 setup_arch()
 {
@@ -1983,12 +1971,9 @@ setup_arch()
 
   enable_pacman_color 'chroot'
   sleep_clear "$DELAY_1"
-
-  if [ -n "$NORMAL_USER" ]
-  then
-    update_user_groups
-    sleep_clear "$DELAY_1"
-  fi
+  
+  enable_pacman_misc "chroot"
+  sleep_clear "$DELAY_1"
 
   return $SUCCESS
 }
@@ -2161,8 +2146,6 @@ main()
 
   # arch setup
   setup_arch
-  sleep_clear "$DELAY_1"
-  enable_pacman_misc "chroot"
   sleep_clear "$DELAY_1"
 
   # epilog
