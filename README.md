@@ -13,8 +13,8 @@ yay -S arch-installer
 
 ```bash
 1) git clone https://github.com/FollowMeDown/arch-installer.git
-2) cp -R arch-installer/ /usr/share/arch-installer
-3) ln -sf /usr/share/arch-installer/arch-install /usr/bin/arch-install
+2) cp -R arch-installer/ /usr/share/
+3) ln -sf /usr/share/arch-installer/arch-install /usr/bin/
 4) chmod +x /usr/bin/arch-install
 ```
 
