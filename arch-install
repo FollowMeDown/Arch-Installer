@@ -90,9 +90,6 @@ BROADCAST=''
 # nameserver address
 NAMESERVER=''
 
-# DualBoot flag
-DUALBOOT=''
-
 # LUKS flag
 LUKS=''
 
@@ -748,22 +745,6 @@ sleep "$DELAY_1"
 }
 
 
-# ask user for dualboot install
-ask_dualboot()
-{
-  while [ "$DUALBOOT" = '' ]
-  do
-    if confirm 'Hard Drive Setup > DualBoot' '[?] Install Arch Linux with Windows/Other OS [y/n]: '
-    then
-      DUALBOOT=$TRUE
-    else
-      DUALBOOT=$FALSE
-    fi
-  done
-  return $SUCCESS
-}
-
-
 # ask user for luks encrypted partition
 ask_luks()
 {
@@ -1097,11 +1078,6 @@ sleep "$DELAY_10"
 # make and format boot partition
 make_boot_partition()
 {
-  if [ "$BOOT_MODE" = 'uefi' ] && [ "$PART_LABEL" = 'gpt' ] && [ $DUALBOOT = $TRUE ]
-  then
-    return $SUCCESS
-  fi
-
   title 'Hard Drive Setup > Partition Creation (boot)'
 
   wprintf '[+] Creating BOOT partition'
@@ -1445,11 +1421,6 @@ EOF
 
     uuid="$(lsblk -o UUID "$ROOT_PART" | sed -n 2p)"
     chroot $CHROOT pacman -S grub --noconfirm --overwrite='*' --needed > $VERBOSE 2>&1
-
-    if [ $DUALBOOT = $TRUE ]
-    then
-      chroot $CHROOT pacman -S os-prober --noconfirm --overwrite='*' --needed > $VERBOSE 2>&1
-    fi
 
     if [ $LUKS = $TRUE ]
     then
@@ -2028,7 +1999,7 @@ easter_backdoor()
   printf "\n\n"
 
   wprintf 'Yo n00b, b4ckd00r1ng y0ur sy5t3m n0w '
-  while [ $bar -ne 5 ]
+  while [ $bar -ne 3 ]
   do
     wprintf "."
     sleep "$DELAY_1"
@@ -2156,8 +2127,6 @@ main()
   get_hd_devs
   sleep_clear "$DELAY_1"
   ask_hd_dev
-  sleep_clear "$DELAY_1"
-  ask_dualboot
   sleep_clear "$DELAY_1"
   umount_filesystems 'harddrive'
   sleep_clear "$DELAY_1"
