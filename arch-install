@@ -1557,7 +1557,6 @@ setup_extra_packages()
 {
  
   dev='
-  pycharm-community-edition
   wireshark-qt
   tcpdump
   radare2
