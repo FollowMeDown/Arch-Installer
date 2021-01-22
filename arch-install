@@ -1834,10 +1834,12 @@ enable_iwd_networkd()
 {
   title 'Arch Linux Setup > Network'
 
-  wprintf '[+] Enabling IWD and Networkd & SSHD'
+  wprintf '[+] Enabling IW_D / NETWORK_D & SSH_D & LIBVIRT_D'
   printf "\n\n"
 
-  chroot $CHROOT systemctl enable iwd systemd-networkd > $VERBOSE 2>&1
+  chroot $CHROOT systemctl enable iwd > $VERBOSE 2>&1
+  chroot $CHROOT systemctl enable libvirtd > $VERBOSE 2>&1
+  chroot $CHROOT systemctl enable systemd-networkd > $VERBOSE 2>&1
   chroot $CHROOT systemctl enable sshd systemd-networkd > $VERBOSE 2>&1
 
   return $SUCCESS
