@@ -1578,6 +1578,7 @@ setup_extra_packages()
   firefox'
 
   editor='
+  leafpad
   hexedit 
   vim'
 
