@@ -1555,6 +1555,7 @@ setup_extra_packages()
 {
  
   dev='
+  metasploit
   code
   perl
   ruby
