@@ -1668,6 +1668,9 @@ setup_extra_packages()
   qrencode'
 
   network='
+  netsniff-ng
+  iftop
+  iptraf
   nethogs
   transmission-gtk
   wireguard-tools
