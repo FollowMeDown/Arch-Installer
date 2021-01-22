@@ -5,7 +5,7 @@
 # AUTHOR : z3r0.c01n (at) protonmail.com #
 ##########################################
 
-# TODO : spotify, lock-color, speedometer, tor-browser, xmrig, mycrypto
+# TODO : spotify, lock-color, speedometer, tor-browser, xmrig, mycrypto, inxi
 
 # arch-installer version
 VERSION='21.1.12'
