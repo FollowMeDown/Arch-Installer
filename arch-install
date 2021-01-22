@@ -33,7 +33,6 @@ MAGENTA="$(tput bold ; tput setaf 5)"
 CYANB="$(tput bold ; tput setaf 6)"
 RED="$(tput setaf 1)"
 YELLOW="$(tput setaf 3)"
-BLINK="$(tput blink)"
 NC="$(tput sgr0)"
 
 # installation mode (gui/net)
@@ -318,6 +317,23 @@ ask_output_mode()
   return $SUCCESS
 }
 
+# ask for output mode
+ask_install_mode()
+{
+  title 'Environment > Install Mode'
+  wprintf '[+] Available install modes:'
+  printf "\n
+  1. GUI (slim/i3) (default)
+  2. NET (minimal) \n\n"
+  wprintf "[?] Make a choice: "
+  read -r install_mode
+  if [ "$install_mode" = 2 ]
+  then
+    INSTALL_MODE='net'
+  fi
+
+  return $SUCCESS
+}
 
 # ask for locale to use
 ask_locale()
@@ -1692,9 +1708,9 @@ setup_extra_packages()
 
   if [ "$INSTALL_MODE" != "gui" ]
   then
-      all="$server"
+      ALL="$server"
   else
-      all="$arch $bluetooth $browser $editor $filesystem $hardware $kernel $fonts $misc $network $xorg $dev"
+      ALL="$arch $bluetooth $browser $editor $filesystem $hardware $kernel $fonts $misc $network $xorg $dev"
   fi
 
   title 'Base System Setup > Extra Packages'
@@ -1726,7 +1742,7 @@ setup_extra_packages()
   warn 'This can take a while, please wait...'
   printf "\n"
 
-  chroot $CHROOT pacman -S --needed --noconfirm --overwrite='*' $all > $VERBOSE 2>&1
+  chroot $CHROOT pacman -S --overwrite='*' --needed --noconfirm $ALL > $VERBOSE 2>&1
  
   sleep "$DELAY_10"
 
@@ -1867,8 +1883,6 @@ ask_x_setup()
   if confirm 'Arch Linux Setup > X11' '[?] Setup X11 + Window Managers [y/n]: '
   then
     X_SETUP=$TRUE
-    printf "\n"
-    printf "${BLINK}NOOB! NOOB! NOOB! ${NC}\n\n"
   fi
 
   return $SUCCESS
@@ -1997,9 +2011,6 @@ easter_backdoor()
     sleep "$DELAY_1"
     bar=$((bar + 1))
   done
-  printf "\n\n"
-  printf "${BLINK}${WHITE}HACK THE PLANET! D00R THE PLANET!${NC}"
-  printf "\n\n"
 
   return $SUCCESS
 }
@@ -2162,5 +2173,3 @@ main()
 
 # we start here
 main "$@"
-
-# EOF
