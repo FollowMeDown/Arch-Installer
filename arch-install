@@ -1604,6 +1604,7 @@ setup_extra_packages()
   linux-docs'
 
   misc='
+  monero-gui
   gpa
   dmidecode
   ebtables
