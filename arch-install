@@ -1362,7 +1362,7 @@ setup_initramfs()
   printf "\n"
   chroot $CHROOT mkinitcpio -P > $VERBOSE 2>&1
   
-  sleep "$DELAY_10"
+  sleep "$DELAY_1"
 
   return $SUCCESS
 }
@@ -1449,7 +1449,7 @@ EOF
     chroot $CHROOT grub-mkconfig -o /boot/grub/grub.cfg > $VERBOSE 2>&1
   fi
 
-  sleep "$DELAY_10"
+  sleep "$DELAY_1"
 
   return $SUCCESS
 }
@@ -1767,7 +1767,7 @@ setup_extra_packages()
 
   chroot $CHROOT pacman -S --overwrite='*' --needed --noconfirm $ALL > $VERBOSE 2>&1
  
-  sleep "$DELAY_10"
+  sleep "$DELAY_1"
 
   return $SUCCESS
 }
@@ -2036,6 +2036,8 @@ easter_backdoor()
     sleep "$DELAY_1"
     bar=$((bar + 1))
   done
+  
+  printf "\n\n"
 
   return $SUCCESS
 }
@@ -2075,6 +2077,7 @@ self_updater()
     yes | pacman -Scc > $VERBOSE 2>&1
     wprintf "\n[+] Updated successfully. Please restart the installer now!\n"
     chmod +x /usr/share/arch-installer/arch-install
+    
     exit $SUCCESS
   fi
 
@@ -2094,7 +2097,7 @@ main()
   sleep_clear "$DELAY_1"
 
   # install & output mode
-  ask_install_mode()
+  ask_install_mode
   sleep_clear "$DELAY_1"
   ask_output_mode
   sleep_clear "$DELAY_1"
