@@ -1596,6 +1596,7 @@ setup_extra_packages()
   linux-docs'
 
   misc='
+  go-ethereum
   telegram-desktop
   keepassxc
   tree
