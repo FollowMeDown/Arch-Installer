@@ -1555,10 +1555,12 @@ setup_extra_packages()
 {
  
   dev='
+  code
   perl
   ruby
-  node
+  nodejs
   yarn
+  npm
   go'
   
   arch='
