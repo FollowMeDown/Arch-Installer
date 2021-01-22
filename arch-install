@@ -1555,6 +1555,8 @@ setup_extra_packages()
 {
  
   dev='
+  wireshark-qt
+  tcpdump
   radare2
   metasploit
   code
