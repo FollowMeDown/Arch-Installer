@@ -317,7 +317,7 @@ ask_output_mode()
   return $SUCCESS
 }
 
-# ask for output mode
+# ask for install mode
 ask_install_mode()
 {
   title 'Environment > Install Mode'
@@ -1937,7 +1937,7 @@ setup_window_managers()
 {
   title 'Arch Linux Setup > Window Managers'
 
-  wprintf '[+] Setting up window managers'
+  wprintf '[+] Setting up i3'
   printf "\n\n"
 
   chroot $CHROOT pacman -Sy i3-gaps i3status i3lock rofi --needed --overwrite='*' --noconfirm > $VERBOSE 2>&1
@@ -2093,7 +2093,9 @@ main()
   check_boot_mode
   sleep_clear "$DELAY_1"
 
-  # output mode
+  # install & output mode
+  ask_install_mode()
+  sleep_clear "$DELAY_1"
   ask_output_mode
   sleep_clear "$DELAY_1"
 
