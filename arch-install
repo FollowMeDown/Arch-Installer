@@ -1598,6 +1598,7 @@ setup_extra_packages()
   intel-ucode'
 
   kernel='
+  bc
   linux-docs'
 
   misc='
