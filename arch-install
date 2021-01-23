@@ -5,8 +5,6 @@
 # AUTHOR : z3r0.c01n (at) protonmail.com #
 ##########################################
 
-# TODO : 
-
 # arch-installer version
 VERSION='21.1.12'
 
@@ -1087,8 +1085,6 @@ make_root_partition()
     sleep_clear "$DELAY_1"
   fi
 
-sleep "$DELAY_10"
-
   return $SUCCESS
 }
 
@@ -1108,8 +1104,6 @@ make_boot_partition()
     mkfs.$BOOT_FS_TYPE -F "$BOOT_PART" > $VERBOSE 2>&1 ||
       { err 'Could not create filesystem'; exit $FAILURE; }
   fi
-
-sleep "$DELAY_10"
 
   return $SUCCESS
 }
