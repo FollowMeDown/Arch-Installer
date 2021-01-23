@@ -1676,7 +1676,7 @@ setup_extra_packages()
   network='
   netsniff-ng
   iftop
-  iptraf
+  iptraf-ng
   nethogs
   transmission-gtk
   wireguard-tools
