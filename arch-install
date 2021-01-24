@@ -1668,6 +1668,7 @@ setup_extra_packages()
   qrencode'
 
   network='
+  crda
   netsniff-ng
   iftop
   iptraf-ng
