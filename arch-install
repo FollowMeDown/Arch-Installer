@@ -1710,7 +1710,6 @@ setup_extra_packages()
   xterm'
 
   server='
-  tree
   dosfstools 
   exfat-utils
   efibootmgr
