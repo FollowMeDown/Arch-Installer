@@ -1594,6 +1594,7 @@ setup_extra_packages()
   intel-ucode'
 
   kernel='
+  cpio
   bc
   linux-docs'
 
