@@ -1599,6 +1599,7 @@ setup_extra_packages()
   linux-docs'
 
   misc='
+  efibootmgr
   gimp
   monero-gui
   gpa
