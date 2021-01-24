@@ -1710,11 +1710,11 @@ setup_extra_packages()
   xterm'
 
   server='
+  os-prober
   dosfstools 
   exfat-utils
   efibootmgr
   neofetch
-  go
   mc 
   vim 
   pydf 
