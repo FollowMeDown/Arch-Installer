@@ -1710,6 +1710,7 @@ setup_extra_packages()
   xterm'
 
   server='
+  cryptsetup 
   os-prober
   dosfstools 
   exfat-utils
