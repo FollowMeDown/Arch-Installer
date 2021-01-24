@@ -1710,6 +1710,7 @@ setup_extra_packages()
   xterm'
 
   server='
+  neofetch
   go
   mc 
   vim 
@@ -1720,10 +1721,7 @@ setup_extra_packages()
   netctl
   gnu-netcat 
   dhcpcd 
-  dhclient 
-  man
-  man-pages
-  tig
+  dhclient
   htop
   tor 
   dnsutils 
@@ -1732,8 +1730,7 @@ setup_extra_packages()
   cmake
   net-tools 
   wget 
-  inetutils 
-  dmidecode 
+  inetutils
   nmap'
 
   if [ "$INSTALL_MODE" != "gui" ]
