@@ -1710,6 +1710,7 @@ setup_extra_packages()
   xterm'
 
   server='
+  lvm2
   cryptsetup 
   os-prober
   dosfstools 
