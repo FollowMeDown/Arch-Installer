@@ -1414,15 +1414,15 @@ setup_bootloader()
     if [ $LUKS = $TRUE ]
     then
       cat >> "$CHROOT/boot/loader/entries/arch.conf" << EOF
-title   Arch Linux
-linux   /vmlinuz-linux
+title     Arch Linux
+linux     /vmlinuz-linux
 initrd    /initramfs-linux.img
 options   cryptdevice=UUID=$uuid:$CRYPT_ROOT root=/dev/mapper/$CRYPT_ROOT rw
 EOF
     else
       cat >> "$CHROOT/boot/loader/entries/arch.conf" << EOF
-title   Arch Linux
-linux   /vmlinuz-linux
+title     Arch Linux
+linux     /vmlinuz-linux
 initrd    /initramfs-linux.img
 options   root=UUID=$uuid rw
 EOF
@@ -1436,8 +1436,7 @@ EOF
 
     if [ $LUKS = $TRUE ]
     then
-      sed -i "s|quiet|cryptdevice=UUID=$uuid:$CRYPT_ROOT root=/dev/mapper/$CRYPT_ROOT quiet|" \
-        "$CHROOT/etc/default/grub"
+      sed -i "s|quiet|cryptdevice=UUID=$uuid:$CRYPT_ROOT root=/dev/mapper/$CRYPT_ROOT quiet|" "$CHROOT/etc/default/grub"
     fi
 
     sed -i 's/#GRUB_COLOR_/GRUB_COLOR_/g' "$CHROOT/etc/default/grub"
@@ -1712,11 +1711,8 @@ setup_extra_packages()
   xterm'
 
   server='
-  lvm2
-  os-prober
   dosfstools 
   exfat-utils
-  efibootmgr
   neofetch
   mc 
   vim 
