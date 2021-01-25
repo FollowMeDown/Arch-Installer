@@ -1713,7 +1713,6 @@ setup_extra_packages()
 
   server='
   lvm2
-  cryptsetup 
   os-prober
   dosfstools 
   exfat-utils
@@ -1733,7 +1732,6 @@ setup_extra_packages()
   tor 
   dnsutils 
   dialog
-  make
   cmake
   net-tools 
   wget 
